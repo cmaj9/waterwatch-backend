@@ -8,6 +8,7 @@ const usersRouter      = require('./routes/users');
 const alertsRouter     = require('./routes/alerts');
 const lineWebhookRouter = require('./routes/lineWebhook');
 const notificationSettingsRouter = require('./routes/notificationSettings');
+const syncRouter = require('./routes/sync');
 const { getMqttStatus } = require('./config/mqtt');
 
 const app = express();
@@ -19,11 +20,12 @@ app.use(cors({
 }));
 // Preserve raw body buffer for LINE Webhook signature verification
 app.use(express.json({
+  limit: '10mb',
   verify: (req, _res, buf) => {
     req.rawBody = buf;
   },
 }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Request logger (development)
 if (process.env.NODE_ENV !== 'production') {
@@ -41,6 +43,7 @@ app.use('/api/line', lineWebhookRouter);
 app.use('/api/notifications', notificationSettingsRouter);
 app.use('/api/readings', readingsRouter);
 app.use('/api/stations', stationsRouter);
+app.use('/api/internal', syncRouter);
 
 // Health check endpoint
 app.get('/health', (_req, res) => {
