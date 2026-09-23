@@ -103,10 +103,14 @@ async function seedUsers() {
 
   console.log(`\n  Done. Inserted: ${inserted}, Skipped: ${skipped}`);
   console.log('═══════════════════════════════════════════');
-  process.exit(0);
+  return { inserted, skipped };
 }
 
-seedUsers().catch((err) => {
-  console.error('Fatal error:', err);
-  process.exit(1);
-});
+if (require.main === module) {
+  seedUsers().catch((err) => {
+    console.error('Fatal error:', err);
+    process.exit(1);
+  });
+}
+
+module.exports = { seedUsers };

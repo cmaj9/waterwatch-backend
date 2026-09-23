@@ -17,6 +17,28 @@ async function startServer() {
   if (!dbOk) {
     console.error('[Startup] [ERROR] Cannot connect to database. Check .env settings.');
     console.error('[Startup] Continuing without DB (API will return errors until DB is available)');
+  } else {
+    // Check if database tables exist, auto-initialize if empty
+    try {
+      const { query } = require('./config/database');
+      const checkRes = await query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_name = 'station'
+        );
+      `);
+      const hasTables = checkRes.rows[0]?.exists;
+      if (!hasTables) {
+        console.log('[Startup] Database tables not found. Auto-initializing schemas...');
+        const { initDb } = require('./scripts/initDb');
+        await initDb();
+        const { seedUsers } = require('./scripts/seedUsers');
+        await seedUsers().catch((err) => console.warn('[Startup] Seed users note:', err.message));
+        console.log('[Startup] [OK] Database auto-initialization complete!');
+      }
+    } catch (initErr) {
+      console.error('[Startup] Auto-initialization error:', initErr.message);
+    }
   }
 
   // 2. Start MQTT subscriber
