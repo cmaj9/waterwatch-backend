@@ -1,0 +1,26 @@
+{
+  "name": "water-level-backend",
+  "version": "1.0.0",
+  "description": "Backend for Water Level Monitoring System - ChirpStack MQTT to PostgreSQL",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "db:init": "node src/scripts/initDb.js"
+  },
+  "dependencies": {
+    "@line/bot-sdk": "^11.2.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
+    "mqtt": "^5.10.4",
+    "pg": "^8.16.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true
+  }
+}
