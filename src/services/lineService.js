@@ -333,8 +333,7 @@ function createAlertFlexMessage({
   refName = 'จุดอ้างอิง',
   station = null,
 }) {
-  const webUrl = getWebUrl();
-  const deepLinkUrl = `${webUrl}/nodes/${encodeURIComponent(stationId)}`;
+  const deepLinkUrl = getLiffUrl(`/nodes/${encodeURIComponent(stationId)}`);
   const timeStr = new Date().toLocaleString('th-TH', {
     timeZone: 'Asia/Bangkok',
     hour: '2-digit',
@@ -427,8 +426,10 @@ function createAlertFlexMessage({
               borderColor: theme.badgeBorder,
               borderWidth: '1px',
               cornerRadius: '9999px',
-              paddingVertical: '4px',
-              paddingHorizontal: '10px',
+              paddingTop: 'xs',
+              paddingBottom: 'xs',
+              paddingStart: 'sm',
+              paddingEnd: 'sm',
               alignItems: 'center',
               spacing: 'xs',
               contents: [
@@ -439,6 +440,7 @@ function createAlertFlexMessage({
                   height: '8px',
                   cornerRadius: '9999px',
                   backgroundColor: theme.dot,
+                  contents: [],
                 },
                 {
                   type: 'text',
@@ -523,7 +525,7 @@ function createAlertFlexMessage({
                 {
                   type: 'text',
                   text: primaryValue,
-                  size: 'xxxl',
+                  size: '3xl',
                   weight: 'bold',
                   color: theme.color,
                   flex: 0,
@@ -733,7 +735,7 @@ function createStatusSummaryFlexMessage(stations = []) {
             style: 'primary',
             color: BENTO_THEME.buttonDark,
             height: 'sm',
-            action: { type: 'uri', label: 'เข้าสู่หน้าแดชบอร์ดหลัก', uri: `${webUrl}/dashboard` },
+            action: { type: 'uri', label: 'เข้าสู่หน้าแดชบอร์ดหลัก', uri: getLiffUrl('/dashboard') },
           },
         ],
       },
@@ -791,8 +793,10 @@ function createStatusSummaryFlexMessage(stations = []) {
                 borderColor: statusTheme.badgeBorder,
                 borderWidth: '1px',
                 cornerRadius: '9999px',
-                paddingVertical: '3px',
-                paddingHorizontal: '8px',
+                paddingTop: 'xs',
+                paddingBottom: 'xs',
+                paddingStart: 'sm',
+                paddingEnd: 'sm',
                 alignItems: 'center',
                 spacing: 'xs',
                 contents: [
@@ -803,6 +807,7 @@ function createStatusSummaryFlexMessage(stations = []) {
                     height: '6px',
                     cornerRadius: '9999px',
                     backgroundColor: statusTheme.dot,
+                    contents: [],
                   },
                   {
                     type: 'text',
@@ -894,7 +899,7 @@ function createStatusSummaryFlexMessage(stations = []) {
             action: {
               type: 'uri',
               label: 'เปิดดูสดบน Dashboard',
-              uri: `${webUrl}/nodes/${encodeURIComponent(st.station_id)}`,
+              uri: getLiffUrl(`/nodes/${encodeURIComponent(st.station_id)}`),
             },
           },
         ],
@@ -917,9 +922,8 @@ function createStatusSummaryFlexMessage(stations = []) {
  * Differentiates registered vs unregistered citizens
  */
 function createWelcomeFlexMessage(displayName = 'ผู้ใช้ LINE', userId = '', isRegistered = false) {
-  const webUrl = getWebUrl();
-  const registerUrl = `${webUrl}/register${userId ? `?uid=${encodeURIComponent(userId)}` : ''}`;
-  const dashboardUrl = `${webUrl}/dashboard`;
+  const registerUrl = getLiffUrl(`/register${userId ? `?uid=${encodeURIComponent(userId)}` : ''}`);
+  const dashboardUrl = getLiffUrl('/dashboard');
 
   const badgeTheme = isRegistered ? BENTO_THEME.severity.normal : BENTO_THEME.severity.warning;
   const statusLabel = isRegistered ? 'สมาชิกประชาชนพร้อมใช้งาน' : 'รอการลงทะเบียนประชาชน';
@@ -947,11 +951,12 @@ function createWelcomeFlexMessage(displayName = 'ผู้ใช้ LINE', userI
           borderColor: badgeTheme.badgeBorder,
           borderWidth: '1px',
           cornerRadius: '9999px',
-          paddingVertical: '4px',
-          paddingHorizontal: '10px',
+          paddingTop: 'xs',
+          paddingBottom: 'xs',
+          paddingStart: 'sm',
+          paddingEnd: 'sm',
           alignItems: 'center',
           spacing: 'xs',
-          alignSelf: 'flex-start',
           contents: [
             {
               type: 'box',
@@ -960,6 +965,7 @@ function createWelcomeFlexMessage(displayName = 'ผู้ใช้ LINE', userI
               height: '8px',
               cornerRadius: '9999px',
               backgroundColor: badgeTheme.dot,
+              contents: [],
             },
             {
               type: 'text',
@@ -982,7 +988,6 @@ function createWelcomeFlexMessage(displayName = 'ผู้ใช้ LINE', userI
               color: '#0284C7',
               size: 'xs',
               weight: 'bold',
-              letterSpacing: '0.05em',
             },
             {
               type: 'text',

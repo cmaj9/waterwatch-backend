@@ -1,6 +1,6 @@
 {
   "name": "water-level-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Backend for Water Level Monitoring System - ChirpStack MQTT to PostgreSQL",
   "main": "src/server.js",
   "scripts": {

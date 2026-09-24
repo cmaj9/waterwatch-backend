@@ -8,8 +8,14 @@ const {
   createWelcomeFlexMessage,
   createStatusSummaryFlexMessage,
   getWebUrl,
+  getLiffUrl,
 } = require('../services/lineService');
-const { saveOrUpdateSubscriber, deactivateSubscriber, getCitizenByLineId } = require('../services/userService');
+const {
+  saveOrUpdateSubscriber,
+  deactivateSubscriber,
+  getCitizenByLineId,
+  registerCitizen,
+} = require('../services/userService');
 
 /**
  * Handle incoming LINE Webhook
@@ -55,22 +61,39 @@ async function handleLineEvent(event) {
     const profile = await getUserProfile(userId);
     const displayName = profile?.displayName || 'ผู้ใช้ LINE';
 
-    // Save or update in line_subscribers table
-    await saveOrUpdateSubscriber({
-      lineUserId: userId,
-      displayName,
-      pictureUrl: profile?.pictureUrl,
-    });
+    // Auto-create or ensure citizen account exists in both users and line_subscribers
+    let citizen = await getCitizenByLineId(userId);
+    if (!citizen) {
+      try {
+        citizen = await registerCitizen({
+          lineUserId: userId,
+          name: displayName,
+        });
+        console.log(`[LINE Webhook] Auto-created citizen account for: ${displayName} (${userId})`);
+      } catch (err) {
+        console.warn('[LINE Webhook] Auto-register citizen warning:', err.message);
+      }
+    } else {
+      await saveOrUpdateSubscriber({
+        lineUserId: userId,
+        displayName,
+        pictureUrl: profile?.pictureUrl,
+      });
+    }
 
-    // Check if citizen is registered
-    const citizen = await getCitizenByLineId(userId);
     const isRegistered = !!citizen;
-
     console.log(`[LINE Webhook] LINE follower: ${displayName} (${userId}) | registered=${isRegistered}`);
 
     // Send rich Welcome Flex Message (Bento Grid) with 1-Tap registration or Dashboard link
     const welcomeFlex = createWelcomeFlexMessage(displayName, userId, isRegistered);
-    await replyMessage(replyToken, welcomeFlex);
+    const replyRes = await replyMessage(replyToken, welcomeFlex);
+    if (!replyRes.success) {
+      console.warn('[LINE Webhook] Welcome Flex failed, sending text fallback:', replyRes.error);
+      await replyMessage(replyToken, [
+        `ยินดีต้อนรับคุณ ${displayName} สู่ระบบเฝ้าระวังระดับน้ำ WaterWatch\n\nระบบตรวจวัดและแจ้งเตือนสถานการณ์น้ำอัจฉริยะแบบเรียลไทม์`,
+        `พิมพ์ "ระดับน้ำ" เพื่อตรวจเช็กสถานะทุกสถานีทันที\n\nเข้าสู่ระบบ Web Dashboard ได้ที่:\n${getLiffUrl('/dashboard')}`,
+      ]);
+    }
     return;
   }
 
@@ -172,7 +195,21 @@ async function handleLineEvent(event) {
 
       // Send rich Status Summary Flex Message
       const statusFlex = createStatusSummaryFlexMessage(stationsRes.rows);
-      await replyMessage(replyToken, statusFlex);
+      const replyRes = await replyMessage(replyToken, statusFlex);
+      if (!replyRes.success) {
+        console.warn('[LINE Webhook] Status Flex reply failed, falling back to text:', replyRes.error);
+        const timeNow = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+        const summaries = stationsRes.rows.map((st) => {
+          const w = st.water_level != null ? `${Number(st.water_level) >= 0 ? '+' : ''}${Number(st.water_level).toFixed(2)} ม.` : 'ไม่มีข้อมูล';
+          const ref = st.reference_point_name || 'จุดอ้างอิง';
+          return `[${st.station_name || st.station_id}]\nระดับน้ำ: ${w} (เทียบ${ref})\nเกณฑ์เฝ้าระวัง: ${st.warning_level != null ? Number(st.warning_level).toFixed(2) + ' ม.' : '-'}\nเกณฑ์วิกฤต: ${st.critical_level != null ? Number(st.critical_level).toFixed(2) + ' ม.' : '-'}`;
+        }).join('\n\n');
+
+        await replyMessage(replyToken, [
+          `รายงานข้อมูลระดับน้ำล่าสุด (${timeNow} น.):\n\n${summaries}`,
+          `เข้าสู่ระบบ Web Dashboard ได้ที่:\n${getLiffUrl('/dashboard')}`,
+        ]);
+      }
       return;
     }
 
