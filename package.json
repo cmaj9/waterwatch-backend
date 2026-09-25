@@ -1,7 +1,7 @@
 {
-  "name": "water-level-backend",
-  "version": "1.0.1",
-  "description": "Backend for Water Level Monitoring System - ChirpStack MQTT to PostgreSQL",
+  "name": "floodguard-backend",
+  "version": "1.0.2",
+  "description": "Backend for FloodGuard Water Level Telemetry & Early Warning System - ChirpStack MQTT to PostgreSQL",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

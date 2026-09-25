@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3001;
 
 async function startServer() {
   console.log('==============================================');
-  console.log('  Water Level Monitor — Backend Server');
+  console.log('  FloodGuard — Telemetry & Alert Backend Server');
   console.log('==============================================');
 
   // 1. Test database connection

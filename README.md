@@ -1,4 +1,4 @@
-# Water Level Monitor — Backend
+# FloodGuard — Telemetry & Early Warning Backend
 
 Node.js + Express backend ที่รับข้อมูลจาก **ChirpStack** ผ่าน **MQTT**,
 บันทึกลง **PostgreSQL** และเปิด **REST API** ให้ Frontend Dashboard ดึงข้อมูล

@@ -90,7 +90,7 @@ async function handleLineEvent(event) {
     if (!replyRes.success) {
       console.warn('[LINE Webhook] Welcome Flex failed, sending text fallback:', replyRes.error);
       await replyMessage(replyToken, [
-        `ยินดีต้อนรับคุณ ${displayName} สู่ระบบเฝ้าระวังระดับน้ำ WaterWatch\n\nระบบตรวจวัดและแจ้งเตือนสถานการณ์น้ำอัจฉริยะแบบเรียลไทม์`,
+        `ยินดีต้อนรับคุณ ${displayName} สู่ระบบเตือนภัยระดับน้ำ FloodGuard\n\nระบบตรวจวัดและแจ้งเตือนสถานการณ์น้ำอัจฉริยะแบบเรียลไทม์`,
         `พิมพ์ "ระดับน้ำ" เพื่อตรวจเช็กสถานะทุกสถานีทันที\n\nเข้าสู่ระบบ Web Dashboard ได้ที่:\n${getLiffUrl('/dashboard')}`,
       ]);
     }
@@ -122,7 +122,7 @@ async function handleLineEvent(event) {
       if (userRes.rows.length === 0) {
         await replyMessage(replyToken, [
           `ไม่พบบัญชีอีเมล "${email}" ในระบบเจ้าหน้าที่\n\nหากท่านเป็นประชาชนทั่วไป บัญชี LINE นี้ได้รับสิทธิ์รับการแจ้งเตือนระดับน้ำเรียบร้อยแล้วโดยไม่ต้องลงทะเบียนครับ`,
-          `ท่านสามารถเลือกสถานีที่ต้องการติดตามได้ที่\n${webUrl}/subscribe?uid=${encodeURIComponent(userId || '')}`,
+          `ท่านสามารถเลือกสถานีที่ต้องการติดตามได้ที่\n${getLiffUrl(`/subscribe?uid=${encodeURIComponent(userId || '')}`)}`,
         ]);
         return;
       }
@@ -139,7 +139,7 @@ async function handleLineEvent(event) {
 
       await replyMessage(replyToken, [
         `เชื่อมต่อบัญชีเจ้าหน้าที่สำเร็จเรียบร้อยแล้ว\n\nชื่อผู้ใช้ ${foundUser.name}\nสิทธิ์การใช้งาน ${foundUser.role}\nอีเมล ${foundUser.email}\n\nระบบได้ผูกบัญชีของท่านกับ LINE เรียบร้อยแล้ว และจะส่งการแจ้งเตือนสถานีที่ท่านดูแลผ่านทางนี้ครับ`,
-        `เข้าสู่ระบบจัดการและแดชบอร์ดได้ที่\n${webUrl}/dashboard`,
+        `เข้าสู่ระบบจัดการและแดชบอร์ดได้ที่\n${getLiffUrl('/dashboard')}`,
       ]);
       return;
     }
@@ -188,7 +188,7 @@ async function handleLineEvent(event) {
       if (stationsRes.rows.length === 0) {
         await replyMessage(replyToken, [
           `ขณะนี้ไม่มีสถานีที่เปิดให้บริการตรวจวัดระดับน้ำ หรือสถานีอยู่ในระหว่างปิดปรับปรุงชั่วคราว`,
-          `ตรวจสอบข้อมูลเพิ่มเติมได้ที่ ${webUrl}/dashboard`,
+          `ตรวจสอบข้อมูลเพิ่มเติมได้ที่ ${getLiffUrl('/dashboard')}`,
         ]);
         return;
       }
@@ -217,7 +217,7 @@ async function handleLineEvent(event) {
     if (['id', 'my id', 'line id', 'ไอดี'].includes(lowerText)) {
       await replyMessage(replyToken, [
         `LINE User ID ของคุณคือ\n${userId}`,
-        `คุณสามารถนำ ID นี้ไปใช้ตั้งค่าการรับแจ้งเตือนหรือกรอกในหน้าเว็บได้ที่\n${webUrl}/subscribe?uid=${encodeURIComponent(userId || '')}`,
+        `คุณสามารถนำ ID นี้ไปใช้ตั้งค่าการรับแจ้งเตือนหรือกรอกในหน้าเว็บได้ที่\n${getLiffUrl(`/subscribe?uid=${encodeURIComponent(userId || '')}`)}`,
       ]);
       return;
     }

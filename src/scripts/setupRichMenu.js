@@ -21,14 +21,14 @@ const richMenuPayload = {
     height: 843,
   },
   selected: true,
-  name: 'WaterWatch Compact Menu',
+  name: 'FloodGuard Compact Menu',
   chatBarText: 'เมนูหลัก',
   areas: [
     {
       bounds: {
         x: 0,
         y: 0,
-        width: 1666,
+        width: 833,
         height: 843,
       },
       action: {
@@ -39,10 +39,10 @@ const richMenuPayload = {
     },
     {
       bounds: {
-        x: 1666,
+        x: 833,
         y: 0,
         width: 834,
-        height: 421,
+        height: 843,
       },
       action: {
         type: 'message',
@@ -52,10 +52,10 @@ const richMenuPayload = {
     },
     {
       bounds: {
-        x: 1666,
-        y: 421,
-        width: 834,
-        height: 422,
+        x: 1667,
+        y: 0,
+        width: 833,
+        height: 843,
       },
       action: {
         type: 'uri',

@@ -10,7 +10,7 @@ const LINE_API_REPLY = 'https://api.line.me/v2/bot/message/reply';
 const LINE_API_PROFILE = 'https://api.line.me/v2/bot/profile';
 
 function getWebUrl() {
-  return (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/+$/, '');
+  return (process.env.FRONTEND_URL || 'https://waterwatch-frontend-mu.vercel.app').replace(/\/+$/, '');
 }
 
 function getLiffUrl(path = '') {
@@ -211,7 +211,7 @@ function formatAlertMessage({ stationName, stationId, alertType, value, threshol
   if (customMessage) {
     text += `• รายละเอียด ${customMessage}\n`;
   }
-  text += `\n[ระบบ WaterWatch] ตรวจสอบข้อมูลสดได้ที่ ${getWebUrl()}/nodes/${encodeURIComponent(stationId)}`;
+  text += `\n[ระบบ FloodGuard] ตรวจสอบข้อมูลสดได้ที่ ${getLiffUrl(`/nodes/${encodeURIComponent(stationId)}`)}`;
 
   return text;
 }
@@ -288,7 +288,7 @@ function getSafetyProtocol(alertType, statusTheme) {
         { num: '1', title: 'ขนย้ายทรัพย์สินและเครื่องใช้ไฟฟ้าขึ้นที่สูงทันที', desc: 'ตัดระบบไฟฟ้าชั้นล่างเพื่อป้องกันไฟฟ้ารั่ว' },
         { num: '2', title: 'เตรียมกระเป๋าฉุกเฉิน ยา และน้ำดื่มสะอาด', desc: 'เก็บเอกสารสำคัญในถุงกันน้ำให้พร้อมเดินทาง' },
         { num: '3', title: 'เคลื่อนย้ายกลุ่มเปราะบางไปจุดปลอดภัย', desc: 'ผู้สูงอายุ เด็ก ผู้ป่วยติดเตียง และสัตว์เลี้ยง' },
-        { num: '4', title: 'ติดตามประกาศเตือนภัยจากศูนย์ WaterWatch', desc: 'ปฏิบัติตามคำแนะนำของเจ้าหน้าที่อย่างเคร่งครัด' },
+        { num: '4', title: 'ติดตามประกาศเตือนภัยจากศูนย์ FloodGuard', desc: 'ปฏิบัติตามคำแนะนำของเจ้าหน้าที่อย่างเคร่งครัด' },
       ];
     }
     return [
@@ -694,7 +694,7 @@ function createAlertFlexMessage({
 
   return {
     type: 'flex',
-    altText: `[WaterWatch] ${theme.label}: ${stationName || stationId} (${primaryValue} ${primaryUnit})`,
+    altText: `[FloodGuard] ${theme.label}: ${stationName || stationId} (${primaryValue} ${primaryUnit})`,
     contents: bubble,
   };
 }
@@ -719,7 +719,7 @@ function createStatusSummaryFlexMessage(stations = []) {
         layout: 'vertical',
         paddingAll: '20px',
         contents: [
-          { type: 'text', text: 'WATERWATCH STATUS', color: '#0284C7', size: 'xxs', weight: 'bold' },
+          { type: 'text', text: 'FLOODGUARD STATUS', color: '#0284C7', size: 'xxs', weight: 'bold' },
           { type: 'text', text: 'สถานการณ์ระดับน้ำล่าสุด', color: BENTO_THEME.textPrimary, size: 'lg', weight: 'bold', margin: 'xs' },
           { type: 'text', text: 'ขณะนี้ไม่มีข้อมูลสถานีที่เปิดให้บริการในระบบ', color: BENTO_THEME.textSecondary, size: 'sm', margin: 'md' },
         ],
@@ -742,7 +742,7 @@ function createStatusSummaryFlexMessage(stations = []) {
     };
     return {
       type: 'flex',
-      altText: 'รายงานข้อมูลระดับน้ำล่าสุด WaterWatch',
+      altText: 'รายงานข้อมูลระดับน้ำล่าสุด FloodGuard',
       contents: emptyBubble,
     };
   }
@@ -909,7 +909,7 @@ function createStatusSummaryFlexMessage(stations = []) {
 
   return {
     type: 'flex',
-    altText: 'รายงานข้อมูลระดับน้ำล่าสุด WaterWatch',
+    altText: 'รายงานข้อมูลระดับน้ำล่าสุด FloodGuard',
     contents: {
       type: 'carousel',
       contents: stationCards,
@@ -984,7 +984,7 @@ function createWelcomeFlexMessage(displayName = 'ผู้ใช้ LINE', userI
           contents: [
             {
               type: 'text',
-              text: 'WaterWatch System',
+              text: 'FloodGuard System',
               color: '#0284C7',
               size: 'xs',
               weight: 'bold',
@@ -1092,7 +1092,7 @@ function createWelcomeFlexMessage(displayName = 'ผู้ใช้ LINE', userI
 
   return {
     type: 'flex',
-    altText: 'ยินดีต้อนรับสู่ระบบเฝ้าระวังระดับน้ำ WaterWatch',
+    altText: 'ยินดีต้อนรับสู่ระบบเตือนภัยระดับน้ำ FloodGuard',
     contents: bubble,
   };
 }
